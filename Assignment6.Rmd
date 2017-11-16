@@ -1,10 +1,10 @@
 ---
 title: "Assignment 6"
-author: "Charles Lang"
+author: "yq2205"
 date: "11/16/2016"
 output: html_document
 ---
-#Addignment 6
+#Assignment 6
 
 In this assignment you will be looking at data from a MOOC. It contains the following per-student variables:
 
@@ -21,9 +21,9 @@ library(rpart)
 #Data
 ```{r}
 #Upload the data sets MOOC1.csv and MOOC2.csv
-M1 <- 
+M1 <- read.csv("MOOC1.csv")
 
-M2 <- 
+M2 <- read.csv("MOOC2.csv")
 
 ```
 
@@ -31,15 +31,21 @@ M2 <-
 ```{r}
 #Using the rpart package generate a classification tree predicting certified from the other variables in the M1 data frame.
 
-c.tree1 <- 
+c.tree1 <- rpart(certified ~ forum.posts + grade + assignment, data= M1, method = "class")
 
 #Check the results from the classifcation tree using the printcp() command
 
+printcp(c.tree1)
 
+```
 
+```{r}
 #Plot your tree
+plot(c.tree1)
 
+```
 
+```{r}
 
 ```
 
