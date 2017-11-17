@@ -1,10 +1,10 @@
 ---
 title: "Assignment 6"
-author: "Charles Lang"
+author: "yq2205"
 date: "11/16/2016"
 output: html_document
 ---
-#Addignment 6
+#Assignment 6
 
 In this assignment you will be looking at data from a MOOC. It contains the following per-student variables:
 
@@ -21,34 +21,37 @@ library(rpart)
 #Data
 ```{r}
 #Upload the data sets MOOC1.csv and MOOC2.csv
-M1 <- 
+M1 <- read.csv("MOOC1.csv")
 
-M2 <- 
+M2 <- read.csv("MOOC2.csv")
 
 ```
 
 #Decision tree
 ```{r}
 #Using the rpart package generate a classification tree predicting certified from the other variables in the M1 data frame.
-
-c.tree1 <- 
-
+M1$certified_num<-ifelse(M1$certified=="yes", 1, 0)
+c.tree1 <- rpart(certified_num ~ forum.posts + grade + assignment, data= M1, method = "class", control=rpart.control(minsplit=1, minbucket=1, cp=0.001))
+#when using cp=0.01 (the default value), there is an error saying that "fit is not a tree, just a root"; after searching for the soluation, I loose the value of cp and managed to plot the tree.
 #Check the results from the classifcation tree using the printcp() command
-
-
-
-#Plot your tree
-
-
+printcp(c.tree1)
 
 ```
+
+```{r}
+#Plot your tree
+post(c.tree1, file="tree1.ps")
+
+```
+
+
 
 #The heading "xerror" in the printcp table stands for "cross validation error", it is the error rate of assigning students to certified/uncertified of the model averaged over 10-fold cross validation. CP stands for "Cost Complexity" and represents the cost in error for adding a node to the tree. Notice it decreases as we add more nodes to the tree which implies that more nodes make better predictions. However, more nodes also mean that we may be making the model less generalizable, this is known as "overfitting".
 
 #If we are worried about overfitting we can remove nodes form our tree using the prune() command, setting cp to the CP value from the table that corresponds to the number of nodes we want the tree to terminate at. Let's set it to two nodes.
 
 ```{r}
-c.tree2 <- prune(c.tree1, cp = 0.047739)
+c.tree2 <- prune(c.tree1, cp = 0.001)
 
 #Visualize this tree and compare it to the one you generated earlier
 
@@ -67,3 +70,21 @@ table(M2$certified, M2$predict1)
 table(M2$certified, M2$predict2)
 
 ```
+```{r}
+#compare the predicted and actual data
+#recode "yes" and "no"
+M2$certified_num<-ifelse(M2$certified=="yes", 1, 0)
+```
+```{r}
+#compare
+C1<-ifelse(M2$certified_num==M2$predict1,1,0)
+C2<-ifelse(M2$certified_num==M2$predict2,1,0)
+
+```
+
+```{r}
+sum(C1)
+sum(C2)
+#from the comparison, it looks like the two trees have equal error rate.
+```
+
